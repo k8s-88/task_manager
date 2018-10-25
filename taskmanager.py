@@ -1,11 +1,19 @@
 from flask import Flask, render_template, request
 import os
+from flask_pymongo import PyMongo
+
 
 app = Flask(__name__)
 
+app.config["MONGO_DBNAME"] = os.environ.get("MONGO_DBNAME")
+app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
+
+mongo = PyMongo(app)
+
 @app.route("/")
 def show_hi():
-    return "hi"
+    tasks = mongo.db.tasks.find()
+    return render_template("tasks.html", tasks=tasks)
 
     
     
